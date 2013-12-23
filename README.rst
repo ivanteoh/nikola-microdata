@@ -1,46 +1,7 @@
-Microdata plugin for Pelican
+Microdata plugin for Nikola
 ============================
 
-.. image:: https://secure.travis-ci.org/noirbizarre/pelican-microdata.png
-   :target: http://travis-ci.org/noirbizarre/pelican-microdata
-.. image:: https://coveralls.io/repos/noirbizarre/pelican-microdata/badge.png?branch=master
-    :target: https://coveralls.io/r/noirbizarre/pelican-microdata
-.. image:: https://pypip.in/v/pelican-microdata/badge.png
-    :target: https://crate.io/packages/pelican-microdata
-.. image:: https://pypip.in/d/pelican-microdata/badge.png
-    :target: https://crate.io/packages/pelican-microdata
-
-`Microdata`_ semantic markups support for `Pelican`_ static blog generator.
-
-Installation
-------------
-
-Install the plugin via ``pip``:
-
-.. code-block:: bash
-
-    ~$ pip install pelican-microdata
-
-Or via ``easy_install``:
-
-.. code-block:: bash
-
-    ~$ easy_install pelican-microdata
-
-
-Usage
------
-
-To load the plugin, you have to add it in your settings file.
-
-.. code-block:: python
-
-    PLUGINS = (
-        'microdata',
-    )
-
-Once loaded you have access to microdata rst directives.
-
+`Microdata`_ semantic markups support for `Nikola`_ static blog generator.
 
 Directives
 ~~~~~~~~~~
@@ -99,4 +60,4 @@ will result in:
 
 
 .. _Microdata: http://schema.org/
-.. _Pelican: http://getpelican.com/
+.. _Nikola: http://getnikola.com/
