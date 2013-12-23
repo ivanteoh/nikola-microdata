@@ -6,11 +6,27 @@ import unittest
 from os.path import dirname, join
 
 #from pelican import readers
+from nikola.utils import LOGGER
+import logbook
 
 RESOURCES_PATH = join(dirname(__file__), 'test-resources')
 
 
 class TestMicrodata(unittest.TestCase):
+
+    #### `TestCase` protocol ##################################################
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR microdata')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR microdata')
+
     def setUp(self):
         super(TestMicrodata, self).setUp()
 
