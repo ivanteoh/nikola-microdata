@@ -5,7 +5,7 @@ import unittest
 
 from os.path import dirname, join
 
-from pelican import readers
+#from pelican import readers
 
 RESOURCES_PATH = join(dirname(__file__), 'test-resources')
 
@@ -14,12 +14,12 @@ class TestMicrodata(unittest.TestCase):
     def setUp(self):
         super(TestMicrodata, self).setUp()
 
-        import microdata
-        microdata.register()
+        #import microdata
+        #microdata.register()
 
     def assert_rst_equal(self, rstfile, expected):
         filename = join(RESOURCES_PATH, rstfile)
-        content, _ = readers.read_file(filename)
+        #content, _ = readers.read_file(filename)
         self.assertEqual(content.strip().replace('\n', ''), expected.strip())
 
     def test_itemprop(self):
@@ -73,3 +73,6 @@ class TestMicrodata(unittest.TestCase):
             '</p>'
         )
         self.assert_rst_equal('microdata_itemscope_nested_compact.rst', expected)
+
+if __name__ == "__main__":
+    unittest.main()

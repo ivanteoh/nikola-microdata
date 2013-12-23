@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# The original author is Axel Haustant (noirbizarre). 
+# This code is fork from https://github.com/noirbizarre/pelican-microdata
 """
 Microdata markup for reStructuredText
 =====================================
@@ -52,15 +54,26 @@ will result in:
 from __future__ import unicode_literals
 
 import re
-import six
+#import six
 
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive, roles
-from pelican.readers import PelicanHTMLTranslator
-from types import MethodType
-
+#from pelican.readers import PelicanHTMLTranslator
+#from types import MethodType
+from nikola.plugin_categories import RestExtension
 
 RE_ROLE = re.compile(r'(?P<value>.+?)\s*\<(?P<name>.+)\>')
+
+
+class Plugin(RestExtension):
+
+    name = "rest_microdata"
+
+    def set_site(self, site):
+        self.site = site
+        directives.register_directive('itemscope', ItemScopeDirective)
+        roles.register_canonical_role('itemprop', itemprop_role)
+        return super(Plugin, self).set_site(site)
 
 
 class ItemProp(nodes.Inline, nodes.TextElement):
@@ -103,6 +116,8 @@ class ItemScopeDirective(Directive):
     }
 
     def run(self):
+        import pdb; pdb.set_trace()
+        # Raise an error if the directive does not have contents.
         self.assert_has_content()
         itemtype = self.arguments[0]
         tag = self.options.get('tag', 'div')
@@ -143,23 +158,22 @@ def visit_paragraph(self, node):
         self.body.append(self.starttag(node, 'p', ''))
         self.context.append('</p>\n')
 
+#def as_method(func):
+#    if six.PY3:
+#        return MethodType(func, PelicanHTMLTranslator)
+#    else:
+#        return MethodType(func, None, PelicanHTMLTranslator)
 
-def as_method(func):
-    if six.PY3:
-        return MethodType(func, PelicanHTMLTranslator)
-    else:
-        return MethodType(func, None, PelicanHTMLTranslator)
 
-
-def register():
-    directives.register_directive('itemscope', ItemScopeDirective)
-    roles.register_canonical_role('itemprop', itemprop_role)
-
-    PelicanHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
-    PelicanHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
-    PelicanHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
-    PelicanHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
+#def register():
+#    directives.register_directive('itemscope', ItemScopeDirective)
+#    roles.register_canonical_role('itemprop', itemprop_role)
+#
+#    PelicanHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
+#    PelicanHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
+#    PelicanHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
+#    PelicanHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
 
     # handle compact parameter
     # TODO: find a cleaner way to handle this case
-    PelicanHTMLTranslator.visit_paragraph = as_method(visit_paragraph)
+#    PelicanHTMLTranslator.visit_paragraph = as_method(visit_paragraph)

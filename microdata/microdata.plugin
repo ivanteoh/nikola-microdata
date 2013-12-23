@@ -4,6 +4,6 @@ Module = microdata
 
 [Documentation]
 Author = Axel Haustant, Ivan Teoh
-Version = 0.1
+Version = 0.1.dev
 Website = https://github.com/ivanteoh/nikola-microdata
 Description = Microdata semantic markups support for Nikola static blog generator.
