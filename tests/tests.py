@@ -14,34 +14,50 @@ from os.path import dirname, join
 #from pelican import readers
 from nikola.utils import LOGGER
 import logbook
+from test_rst_compiler import ReSTExtensionTestCase
 
 RESOURCES_PATH = join(dirname(__file__), 'test-resources')
 
-
-class TestMicrodata(unittest.TestCase):
+class ItemPropTestCase(ReSTExtensionTestCase):
 
     #### `TestCase` protocol ##################################################
 
     @staticmethod
     def setUpClass():
-        LOGGER.notice('--- TESTS FOR microdata')
+        LOGGER.notice('--- TESTS FOR ItemProp')
         LOGGER.level = logbook.WARNING
 
     @staticmethod
     def tearDownClass():
         sys.stdout.write('\n')
         LOGGER.level = logbook.NOTICE
-        LOGGER.notice('--- END OF TESTS FOR microdata')
+        LOGGER.notice('--- END OF TESTS FOR ItemProp')
 
+    #def setUp(self):
+    #    """ Create a demo site, for testing. """
+
+    #def tearDown(self):
+    #    """ Restore world order. """
+
+    #### `TestCommandTags` protocol ###########################################
+    sample = ':itemprop:`Test <name>`'
+
+    def test_test(self):
+        self.basic_test()
+        self.assertHTMLContains("iframe", attributes={"src": "foo"},
+                                text="spam")
+        self.assertRaises(Exception, self.assertHTMLContains, "eggs", {})
+
+class TestMicrodata(unittest.TestCase):
     def setUp(self):
         super(TestMicrodata, self).setUp()
 
-        #import microdata
-        #microdata.register()
+        import microdata
+        microdata.register()
 
     def assert_rst_equal(self, rstfile, expected):
         filename = join(RESOURCES_PATH, rstfile)
-        #content, _ = readers.read_file(filename)
+        content, _ = readers.read_file(filename)
         self.assertEqual(content.strip().replace('\n', ''), expected.strip())
 
     def test_itemprop(self):

@@ -31,7 +31,8 @@ from __future__ import unicode_literals, absolute_import
 # and should be before any import touching nikola, in any file under tests/
 import os
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+extra_plugin_dir = os.path.join(os.path.dirname(__file__), '..')
+sys.path.insert(0, extra_plugin_dir)
 
 
 import codecs
@@ -90,6 +91,7 @@ class FakeSite(object):
             'DISABLED_PLUGINS': [],
             'EXTRA_PLUGINS': [],
             'DEFAULT_LANG': 'en',
+            'EXTRA_PLUGINS_DIRS': [extra_plugin_dir],
         }
         self.EXTRA_PLUGINS = self.config['EXTRA_PLUGINS']
         self.plugin_manager = PluginManager(categories_filter={
@@ -103,14 +105,15 @@ class FakeSite(object):
         })
         self.loghandlers = [STDERR_HANDLER]
         self.plugin_manager.setPluginInfoExtension('plugin')
+        extra_plugins_dirs = self.config['EXTRA_PLUGINS_DIRS']
         if sys.version_info[0] == 3:
             places = [
                 os.path.join(os.path.dirname(utils.__file__), 'plugins'),
-            ]
+            ] + [path for path in extra_plugins_dirs if path]
         else:
             places = [
                 os.path.join(os.path.dirname(utils.__file__), utils.sys_encode('plugins')),
-            ]
+            ] + [utils.sys_encode(path) for path in extra_plugins_dirs if path]
         self.plugin_manager.setPluginPlaces(places)
         self.plugin_manager.collectPlugins()
 

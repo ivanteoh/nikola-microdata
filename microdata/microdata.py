@@ -116,7 +116,6 @@ class ItemScopeDirective(Directive):
     }
 
     def run(self):
-        import pdb; pdb.set_trace()
         # Raise an error if the directive does not have contents.
         self.assert_has_content()
         itemtype = self.arguments[0]
