@@ -20,8 +20,6 @@ RESOURCES_PATH = join(dirname(__file__), 'test-resources')
 
 class ItemPropTestCase(ReSTExtensionTestCase):
 
-    #### `TestCase` protocol ##################################################
-
     @staticmethod
     def setUpClass():
         LOGGER.notice('--- TESTS FOR ItemProp')
@@ -33,20 +31,13 @@ class ItemPropTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemProp')
 
-    #def setUp(self):
-    #    """ Create a demo site, for testing. """
-
-    #def tearDown(self):
-    #    """ Restore world order. """
-
-    #### `TestCommandTags` protocol ###########################################
     sample = ':itemprop:`Test <name>`'
 
-    def test_test(self):
+    def test_itemprop(self):
         self.basic_test()
-        self.assertHTMLContains("iframe", attributes={"src": "foo"},
-                                text="spam")
-        self.assertRaises(Exception, self.assertHTMLContains, "eggs", {})
+        self.assertHTMLContains("span", attributes={"itemprop": "name"},
+                                text="Test")
+
 
 class TestMicrodata(unittest.TestCase):
     def setUp(self):

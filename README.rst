@@ -58,6 +58,11 @@ will result in:
         at <span itemprop="affiliation">ACME Corp</span>.
     </p>
 
+Test
+~~~~
+To run unit test
+$ cd tests
+$ python -m unittest tests.ItemPropTestCase
 
 .. _Microdata: http://schema.org/
 .. _Nikola: http://getnikola.com/

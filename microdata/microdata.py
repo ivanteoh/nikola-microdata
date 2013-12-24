@@ -54,13 +54,14 @@ will result in:
 from __future__ import unicode_literals
 
 import re
-#import six
+import six
 
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive, roles
 #from pelican.readers import PelicanHTMLTranslator
-#from types import MethodType
+from types import MethodType
 from nikola.plugin_categories import RestExtension
+from nikola.plugins.compile.rest import NikolaHTMLTranslator
 
 RE_ROLE = re.compile(r'(?P<value>.+?)\s*\<(?P<name>.+)\>')
 
@@ -73,6 +74,16 @@ class Plugin(RestExtension):
         self.site = site
         directives.register_directive('itemscope', ItemScopeDirective)
         roles.register_canonical_role('itemprop', itemprop_role)
+
+        NikolaHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
+        NikolaHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
+        NikolaHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
+        NikolaHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
+
+        # handle compact parameter
+        # TODO: find a cleaner way to handle this case
+        NikolaHTMLTranslator.visit_paragraph = as_method(visit_paragraph)
+
         return super(Plugin, self).set_site(site)
 
 
@@ -157,11 +168,11 @@ def visit_paragraph(self, node):
         self.body.append(self.starttag(node, 'p', ''))
         self.context.append('</p>\n')
 
-#def as_method(func):
-#    if six.PY3:
-#        return MethodType(func, PelicanHTMLTranslator)
-#    else:
-#        return MethodType(func, None, PelicanHTMLTranslator)
+def as_method(func):
+    if six.PY3:
+        return MethodType(func, NikolaHTMLTranslator)
+    else:
+        return MethodType(func, None, NikolaHTMLTranslator)
 
 
 #def register():
