@@ -34,52 +34,130 @@ class ItemPropTestCase(ReSTExtensionTestCase):
     sample = ':itemprop:`Test <name>`'
 
     def test_itemprop(self):
+        # the result should be
+        # <p><span itemprop="name">Test</span></p>
         self.basic_test()
         self.assertHTMLContains("span", attributes={"itemprop": "name"},
                                 text="Test")
+        self.assertHTMLContains("p")
 
 
-class TestMicrodata(unittest.TestCase):
-    def setUp(self):
-        super(TestMicrodata, self).setUp()
+class ItemPropUrlTestCase(ReSTExtensionTestCase):
 
-        import microdata
-        microdata.register()
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemPropUrl')
+        LOGGER.level = logbook.WARNING
 
-    def assert_rst_equal(self, rstfile, expected):
-        filename = join(RESOURCES_PATH, rstfile)
-        content, _ = readers.read_file(filename)
-        self.assertEqual(content.strip().replace('\n', ''), expected.strip())
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemPropUrl')
 
-    def test_itemprop(self):
-        expected = (
-            '<p>'
-            '<span itemprop="name">Test</span>'
-            '</p>'
-        )
-        self.assert_rst_equal('microdata_itemprop.rst', expected)
+    sample = ':itemprop:`Test <url:http://somewhere/>`'
 
     def test_itemprop_url(self):
-        expected = '<p><a href="http://somewhere/" itemprop="url">Test</a></p>'
-        self.assert_rst_equal('microdata_itemprop_url.rst', expected)
+        # the result should be 
+        # <p><a href="http://somewhere/" itemprop="url">Test</a></p>
+        self.basic_test()
+        self.assertHTMLContains("a", attributes={"itemprop": "url", "href": "http://somewhere/"},
+                                text="Test")
+        self.assertHTMLContains("p")
+
+
+class ItemScopeTestCase(ReSTExtensionTestCase):
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemScope')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemScope')
+
+    sample = """.. itemscope:: Person
+
+        My name is :itemprop:`John Doe <name>`
+    """
 
     def test_itemscope(self):
-        expected = (
-            '<div itemscope itemtype="http://data-vocabulary.org/Person">'
-            'My name is <span itemprop="name">John Doe</span>'
-            '</div>'
-        )
-        self.assert_rst_equal('microdata_itemscope.rst', expected)
+        # the result should be 
+        # <div itemscope itemtype="http://data-vocabulary.org/Person">
+        # My name is <span itemprop="name">John Doe</span>
+        # </div>
+        self.basic_test()
+        self.assertHTMLContains("div", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
+                                text="My name is ")
+        self.assertHTMLContains("span", attributes={"itemprop": "name"},
+                                text="John Doe")
+
+
+class ItemScopeTagTestCase(ReSTExtensionTestCase):
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemScopeTag')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeTag')
+
+    sample = """.. itemscope:: Person  
+        :tag: p
+
+        My name is :itemprop:`John Doe <name>`
+    """
 
     def test_itemscope_tag(self):
-        expected = (
-            '<p itemscope itemtype="http://data-vocabulary.org/Person">'
-            'My name is <span itemprop="name">John Doe</span>'
-            '</p>'
-        )
-        self.assert_rst_equal('microdata_itemscope_tag.rst', expected)
+        # the result should be 
+        # <p itemscope itemtype="http://data-vocabulary.org/Person">
+        # My name is <span itemprop="name">John Doe</span>
+        # </p>
+        self.basic_test()
+        self.assertHTMLContains("p", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
+                                text="My name is ")
+        self.assertHTMLContains("span", attributes={"itemprop": "name"},
+                                text="John Doe")
+
+
+class ItemScopeNestedTestCase(ReSTExtensionTestCase):
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemScopeNested')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeNested')
+
+    sample = """.. itemscope:: Person
+
+        My name is :itemprop:`John Doe <name>`
+
+        .. itemscope:: Address
+            :tag: p
+            :itemprop: address
+
+            My name is :itemprop:`John Doe <name>`
+    """
 
     def test_nested_scope(self):
+        # the result should be 
+        # <div itemscope itemtype="http://data-vocabulary.org/Person">
+        # <p>My name is <span itemprop="name">John Doe</span></p>
+        # <p itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
+        # My name is <span itemprop="name">John Doe</span>
+        # </p></div>
         expected = (
             '<div itemscope itemtype="http://data-vocabulary.org/Person">'
             '<p>'
@@ -90,9 +168,46 @@ class TestMicrodata(unittest.TestCase):
             '</p>'
             '</div>'
         )
-        self.assert_rst_equal('microdata_itemscope_nested.rst', expected)
+        self.basic_test()
+        self.assertHTMLContains("div", attributes={"itemscope": "", 
+                                "itemtype": "http://data-vocabulary.org/Person"},
+                                text="")
+        self.assertHTMLEqual(expected.strip())
+
+
+class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemScopeNestedCompact')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeNestedCompact')
+
+    sample = """.. itemscope:: Person
+        :tag: p
+        :compact:
+
+        My name is :itemprop:`John Doe <name>`
+
+        .. itemscope:: Address
+            :tag: span
+            :itemprop: address
+
+            My name is :itemprop:`John Doe <name>`
+    """
 
     def test_nested_scope_compact(self):
+        # the result should be 
+        # <p itemscope itemtype="http://data-vocabulary.org/Person">
+        # My name is <span itemprop="name">John Doe</span>
+        # <span itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
+        # My name is <span itemprop="name">John Doe</span>
+        # </span></p>
         expected = (
             '<p itemscope itemtype="http://data-vocabulary.org/Person">'
             'My name is <span itemprop="name">John Doe</span>'
@@ -101,7 +216,12 @@ class TestMicrodata(unittest.TestCase):
             '</span>'
             '</p>'
         )
-        self.assert_rst_equal('microdata_itemscope_nested_compact.rst', expected)
+        self.basic_test()
+        self.assertHTMLContains("p", attributes={"itemscope": "", 
+                                "itemtype": "http://data-vocabulary.org/Person"},
+                                text="My name is ")
+        self.assertHTMLEqual(expected.strip())
+
 
 if __name__ == "__main__":
     unittest.main()

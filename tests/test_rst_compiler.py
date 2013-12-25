@@ -180,6 +180,12 @@ class ReSTExtensionTestCase(BaseTestCase):
             if text:
                 self.assertIn(text, tag.text)
 
+    def assertHTMLEqual(self, html):
+        """ Test if HTML document is the same
+        """
+        html_string = self.html.strip().replace('\n', '')
+        self.assertEqual(html_string, html)
+
 
 class ReSTExtensionTestCaseTestCase(ReSTExtensionTestCase):
     """ Simple test for our base class :) """
