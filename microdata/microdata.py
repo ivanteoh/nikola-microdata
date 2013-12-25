@@ -61,7 +61,7 @@ from docutils.parsers.rst import directives, Directive, roles
 #from pelican.readers import PelicanHTMLTranslator
 from types import MethodType
 from nikola.plugin_categories import RestExtension
-from nikola.plugins.compile.rest import NikolaHTMLTranslator
+from nikola.plugins.compile.rest import add_node
 
 RE_ROLE = re.compile(r'(?P<value>.+?)\s*\<(?P<name>.+)\>')
 
@@ -75,14 +75,19 @@ class Plugin(RestExtension):
         directives.register_directive('itemscope', ItemScopeDirective)
         roles.register_canonical_role('itemprop', itemprop_role)
 
-        NikolaHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
-        NikolaHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
-        NikolaHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
-        NikolaHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
+        add_node(ItemProp, visit_ItemProp, depart_ItemProp)
+        add_node(ItemScope, visit_ItemScope, depart_ItemScope)
+
+        #nodes._add_node_class_names([ItemScope.__name__])
+
+        #NikolaHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
+        #NikolaHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
+        #NikolaHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
+        #NikolaHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
 
         # handle compact parameter
         # TODO: find a cleaner way to handle this case
-        NikolaHTMLTranslator.visit_paragraph = as_method(visit_paragraph)
+        #NikolaHTMLTranslator.visit_paragraph = as_method(visit_paragraph)
 
         return super(Plugin, self).set_site(site)
 
@@ -178,8 +183,8 @@ def visit_paragraph(self, node):
         self.body.append(self.starttag(node, 'p', ''))
         self.context.append('</p>\n')
 
-def as_method(func):
-    if six.PY3:
-        return MethodType(func, NikolaHTMLTranslator)
-    else:
-        return MethodType(func, None, NikolaHTMLTranslator)
+#def as_method(func):
+#    if six.PY3:
+#        return MethodType(func, NikolaHTMLTranslator)
+#    else:
+#        return MethodType(func, None, NikolaHTMLTranslator)

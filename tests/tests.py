@@ -30,8 +30,6 @@ class ItemPropTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemProp')
 
-    
-
     def test_itemprop(self):
         # the result should be
         # <p><span itemprop="name">Test</span></p>
@@ -78,8 +76,6 @@ class ItemScopeTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScope')
 
-    
-
     def test_itemscope(self):
         # the result should be 
         # <div itemscope itemtype="http://data-vocabulary.org/Person">
@@ -105,9 +101,7 @@ class ItemScopePropTestCase(ReSTExtensionTestCase):
     def tearDownClass():
         sys.stdout.write('\n')
         LOGGER.level = logbook.NOTICE
-        LOGGER.notice('--- END OF TESTS FOR ItemScopeProp')
-
-    
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeProp') 
 
     def test_itemscope_itemprop(self):
         # the result should be 
@@ -138,8 +132,6 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeTag')
 
-    
-
     def test_itemscope_tag(self):
         # the result should be 
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
@@ -169,8 +161,6 @@ class ItemScopeNestedTestCase(ReSTExtensionTestCase):
         sys.stdout.write('\n')
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNested')
-
-
 
     def test_nested_scope(self):
         # the result should be 
@@ -219,8 +209,7 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNestedCompact')
 
-
-
+    @unittest.skip("testing skipping")
     def test_nested_scope_compact(self):
         # the result should be 
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
