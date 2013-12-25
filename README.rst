@@ -1,7 +1,10 @@
 Microdata plugin for Nikola
 ============================
 
-`Microdata`_ semantic markups support for `Nikola`_ static blog generator.
+`Microdata`_ semantic markups support for `Nikola`_ static blog generator. 
+The original code is at `pelican-microdata`_. It is created to support `recipe 
+microdata`_ (`recipe schema`_)in mind. It should support other microdata type. More info, 
+please refer to 
 
 Directives
 ~~~~~~~~~~
@@ -24,8 +27,13 @@ Microdata plugin provides two directives:
     .. code-block:: ReST
 
         :itemprop:`Displayed text <itemprop name>`
-        :itemprop:`Displayed text <itemprop name:http://some.url/>`
+        :itemprop:`Displayed text <itemprop name:http://some.url/>` #depreciated, use | instead
+        :itemprop:`Displayed text <itemprop name|itemprop info>` 
+        :itemprop:`Displayed text <itemprop name|itemprop info|itemprop tag>` #itemprop tag is optional, default is span or specific tag, depending on the itemprop name, defined in schema.org
 
+Specific itemprop name that currently support:
+
+- url
 
 Example
 ~~~~~~~
@@ -66,3 +74,6 @@ $ python -m unittest tests.ItemPropTestCase
 
 .. _Microdata: http://schema.org/
 .. _Nikola: http://getnikola.com/
+.. _pelican-microdata: https://github.com/noirbizarre/pelican-microdata
+.. _recipe microdata: https://support.google.com/webmasters/answer/173379?hl=en
+.. _recipe schema: http://www.schema.org/Recipe

@@ -97,11 +97,19 @@ def itemprop_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
         raise ValueError('%s does not match expected itemprop format: :itemprop:`value <name>`')
     value = match.group('value')
     name = match.group('name')
+    info = ''
+    tag = 'span'
     if ':' in name:
-        name, href = name.split(':', 1)
-    else:
-        href = None
-    return [ItemProp(value, value, name=name, href=href)], []
+        # depreciated, use | for nikola
+        name, info = name.split(':', 1)
+    elif '|' in name:
+        names = name.split('|', 2)
+        name = names[0]
+        if len(names) > 1:
+            info = names[1]
+        if len(names) > 2:
+            tag = names[2]
+    return [ItemProp(value, value, name=name, info=info, tag=tag)], []
 
 
 class ItemScope(nodes.Element):
@@ -114,7 +122,7 @@ class ItemScope(nodes.Element):
             kwargs['itemprop'] = itemprop
         super(ItemScope, self).__init__('', **kwargs)
         self.tagname = tagname
-        self.compact =  tagname == 'p' or compact
+        self.compact = tagname == 'p' or compact
 
 
 class ItemScopeDirective(Directive):
@@ -140,17 +148,19 @@ class ItemScopeDirective(Directive):
 
 
 def visit_ItemProp(self, node):
-    if node['href']:
-        self.body.append(self.starttag(node, 'a', '', itemprop=node['name'], href=node['href']))
+    if not node['tag']:
+        node['tag'] = 'span'
+
+    if node['name'] == 'url':
+        node['tag'] = 'a'
+        self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], href=node['info']))
     else:
-        self.body.append(self.starttag(node, 'span', '', itemprop=node['name']))
+        self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name']))
 
 
 def depart_ItemProp(self, node):
-    if node['href']:
-        self.body.append('</a>')
-    else:
-        self.body.append('</span>')
+    end_tag = '</' + node['tag'] + '>'
+    self.body.append(end_tag)
 
 
 def visit_ItemScope(self, node):
@@ -173,17 +183,3 @@ def as_method(func):
         return MethodType(func, NikolaHTMLTranslator)
     else:
         return MethodType(func, None, NikolaHTMLTranslator)
-
-
-#def register():
-#    directives.register_directive('itemscope', ItemScopeDirective)
-#    roles.register_canonical_role('itemprop', itemprop_role)
-#
-#    PelicanHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
-#    PelicanHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
-#    PelicanHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
-#    PelicanHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
-
-    # handle compact parameter
-    # TODO: find a cleaner way to handle this case
-#    PelicanHTMLTranslator.visit_paragraph = as_method(visit_paragraph)

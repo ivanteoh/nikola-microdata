@@ -30,11 +30,12 @@ class ItemPropTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemProp')
 
-    sample = ':itemprop:`Test <name>`'
+    
 
     def test_itemprop(self):
         # the result should be
         # <p><span itemprop="name">Test</span></p>
+        self.sample = ':itemprop:`Test <name>`'
         self.basic_test()
         self.assertHTMLContains("span", attributes={"itemprop": "name"},
                                 text="Test")
@@ -54,11 +55,10 @@ class ItemPropUrlTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemPropUrl')
 
-    sample = ':itemprop:`Test <url:http://somewhere/>`'
-
     def test_itemprop_url(self):
         # the result should be 
         # <p><a href="http://somewhere/" itemprop="url">Test</a></p>
+        self.sample = ':itemprop:`Test <url:http://somewhere/>`'
         self.basic_test()
         self.assertHTMLContains("a", attributes={"itemprop": "url", "href": "http://somewhere/"},
                                 text="Test")
@@ -78,16 +78,46 @@ class ItemScopeTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScope')
 
-    sample = """.. itemscope:: Person
-
-        My name is :itemprop:`John Doe <name>`
-    """
+    
 
     def test_itemscope(self):
         # the result should be 
         # <div itemscope itemtype="http://data-vocabulary.org/Person">
+        # My name is John Doe
+        # </div>
+        self.sample = """.. itemscope:: Person
+
+            My name is John Doe
+        """
+        self.basic_test()
+        self.assertHTMLContains("div", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
+                                text="My name is John Doe")
+
+
+class ItemScopePropTestCase(ReSTExtensionTestCase):
+
+    @staticmethod
+    def setUpClass():
+        LOGGER.notice('--- TESTS FOR ItemScopeProp')
+        LOGGER.level = logbook.WARNING
+
+    @staticmethod
+    def tearDownClass():
+        sys.stdout.write('\n')
+        LOGGER.level = logbook.NOTICE
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeProp')
+
+    
+
+    def test_itemscope_itemprop(self):
+        # the result should be 
+        # <div itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is <span itemprop="name">John Doe</span>
         # </div>
+        self.sample = """.. itemscope:: Person
+
+            My name is :itemprop:`John Doe <name>`
+        """
         self.basic_test()
         self.assertHTMLContains("div", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
                                 text="My name is ")
@@ -108,17 +138,18 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeTag')
 
-    sample = """.. itemscope:: Person  
-        :tag: p
-
-        My name is :itemprop:`John Doe <name>`
-    """
+    
 
     def test_itemscope_tag(self):
         # the result should be 
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is <span itemprop="name">John Doe</span>
         # </p>
+        self.sample = """.. itemscope:: Person  
+            :tag: p
+
+            My name is :itemprop:`John Doe <name>`
+        """
         self.basic_test()
         self.assertHTMLContains("p", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
                                 text="My name is ")
@@ -139,16 +170,7 @@ class ItemScopeNestedTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNested')
 
-    sample = """.. itemscope:: Person
 
-        My name is :itemprop:`John Doe <name>`
-
-        .. itemscope:: Address
-            :tag: p
-            :itemprop: address
-
-            My name is :itemprop:`John Doe <name>`
-    """
 
     def test_nested_scope(self):
         # the result should be 
@@ -167,6 +189,16 @@ class ItemScopeNestedTestCase(ReSTExtensionTestCase):
             '</p>'
             '</div>'
         )
+        self.sample = """.. itemscope:: Person
+
+            My name is :itemprop:`John Doe <name>`
+
+            .. itemscope:: Address
+                :tag: p
+                :itemprop: address
+
+                My name is :itemprop:`John Doe <name>`
+        """
         self.basic_test()
         self.assertHTMLContains("div", attributes={"itemscope": "", 
                                 "itemtype": "http://data-vocabulary.org/Person"},
@@ -187,18 +219,7 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNestedCompact')
 
-    sample = """.. itemscope:: Person
-        :tag: p
-        :compact:
 
-        My name is :itemprop:`John Doe <name>`
-
-        .. itemscope:: Address
-            :tag: span
-            :itemprop: address
-
-            My name is :itemprop:`John Doe <name>`
-    """
 
     def test_nested_scope_compact(self):
         # the result should be 
@@ -215,6 +236,18 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
             '</span>'
             '</p>'
         )
+        self.sample = """.. itemscope:: Person
+            :tag: p
+            :compact:
+
+            My name is :itemprop:`John Doe <name>`
+
+            .. itemscope:: Address
+                :tag: span
+                :itemprop: address
+
+                My name is :itemprop:`John Doe <name>`
+        """
         self.basic_test()
         self.assertHTMLContains("p", attributes={"itemscope": "", 
                                 "itemtype": "http://data-vocabulary.org/Person"},
