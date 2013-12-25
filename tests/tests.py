@@ -16,7 +16,6 @@ from nikola.utils import LOGGER
 import logbook
 from test_rst_compiler import ReSTExtensionTestCase
 
-RESOURCES_PATH = join(dirname(__file__), 'test-resources')
 
 class ItemPropTestCase(ReSTExtensionTestCase):
 
