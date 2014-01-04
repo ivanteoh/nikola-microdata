@@ -143,7 +143,6 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
             My name is :itemprop:`John Doe <name>`
         """
         self.basic_test()
-        import pdb; pdb.set_trace()
         self.assertHTMLContains("p", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
                                 text="My name is ")
         self.assertHTMLContains("span", attributes={"itemprop": "name"},
