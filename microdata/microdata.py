@@ -178,19 +178,19 @@ def visit_ItemProp(self, node):
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], href=node['info']))
     elif node['name'] == 'photo' and node['tag'] == 'img':
         self.body.append(self.emptytag(node, node['tag'], '', itemprop=node['name'], src=node['info']))
-    elif (node['name'] == 'prepTime' or 
-        node['name'] == 'cookTime' or 
-        node['name'] == 'totalTime' or
-        node['name'] == 'published') and node['tag'] == 'time':
+    elif node['tag'] == 'time':
         # TODO: auto convert the time
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], datetime=node['info']))
+    elif node['tag'] == 'meta':
+        # TODO: auto convert the time
+        self.body.append(self.emptytag(node, node['tag'], '', itemprop=node['name'], content=node['info']))
     else:
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name']))
 
 
 def depart_ItemProp(self, node):
     end_tag = '</' + node['tag'] + '>'
-    if node['tag'] == 'img':
+    if node['tag'] == 'img' or node['tag'] == 'meta':
         return
     self.body.append(end_tag)
 

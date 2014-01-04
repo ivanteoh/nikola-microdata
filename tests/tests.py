@@ -54,6 +54,21 @@ class ItemPropTestCase(ReSTExtensionTestCase):
                                 text="30 min")
         self.assertHTMLContains("p")
 
+    def test_itemprop_meta(self):
+        # the result should be
+        # <meta itemprop="datePublished" content="2009-05-08">May 8, 2009
+        expected = (
+            '<p>'
+            '<meta content="2009-05-08" itemprop="datePublished" /> May 8, 2009'
+            '</p>\n'
+        )
+        self.sample = ":itemprop:`<datePublished|2009-05-08|meta>` May 8, 2009"
+        self.basic_test()
+        self.assertHTMLContains("meta", attributes={"itemprop": "datePublished", "content": "2009-05-08"},
+                                text="")
+        self.assertHTMLContains("p")
+        self.assertHTMLEqual(expected.strip())
+
 
 class ItemPropUrlTestCase(ReSTExtensionTestCase):
 
