@@ -60,7 +60,7 @@ from docutils.parsers.rst import directives, Directive, roles
 from nikola.plugin_categories import RestExtension
 from nikola.plugins.compile.rest import add_node
 
-RE_ROLE = re.compile(r'(?P<value>.+?)\s*\<(?P<name>.+)\>')
+RE_ROLE = re.compile(r'(?P<value>.+?)?\s*\<(?P<name>.+)\>')
 
 
 class Plugin(RestExtension):
@@ -84,9 +84,11 @@ class ItemProp(nodes.Inline, nodes.TextElement):
 
 def itemprop_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
     match = RE_ROLE.match(text)
-    if not match.group('value') and match.group('name'):
+    if not match or not match.group('name'):
         raise ValueError('%s does not match expected itemprop format: :itemprop:`value <name>`')
-    value = match.group('value')
+    value = ''
+    if match.group('value'):
+        value = match.group('value')
     name = match.group('name')
     info = ''
     tag = 'span'
@@ -145,12 +147,21 @@ def visit_ItemProp(self, node):
     if node['name'] == 'url':
         node['tag'] = 'a'
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], href=node['info']))
+    elif node['name'] == 'photo' and node['tag'] == 'img':
+        self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], src=node['info']))
+    elif (node['name'] == 'prepTime' or 
+        node['name'] == 'cookTime' or 
+        node['name'] == 'totalTime' or
+        node['name'] == 'published') and node['tag'] == 'time':
+        self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], datetime=node['info']))
     else:
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name']))
 
 
 def depart_ItemProp(self, node):
     end_tag = '</' + node['tag'] + '>'
+    if node['tag'] == 'img':
+        end_tag = '</>'
     self.body.append(end_tag)
 
 

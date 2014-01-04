@@ -36,6 +36,24 @@ class ItemPropTestCase(ReSTExtensionTestCase):
                                 text="Test")
         self.assertHTMLContains("p")
 
+    def test_itemprop_image(self):
+        # the result should be
+        # <img itemprop="photo" src="apple-pie.jpg" />
+        self.sample = ":itemprop:`<photo|apple-pie.jpg|img>`"
+        self.basic_test()
+        self.assertHTMLContains("img", attributes={"itemprop": "photo", "src": "apple-pie.jpg"},
+                                text="")
+        self.assertHTMLContains("p")
+
+    def test_itemprop_time(self):
+        # the result should be
+        # <time datetime="PT30M" itemprop="prepTime">30 min</time>
+        self.sample = ":itemprop:`30 min <prepTime|PT30M|time>`"
+        self.basic_test()
+        self.assertHTMLContains("time", attributes={"itemprop": "prepTime", "datetime": "PT30M"},
+                                text="30 min")
+        self.assertHTMLContains("p")
+
 
 class ItemPropUrlTestCase(ReSTExtensionTestCase):
 
@@ -144,6 +162,26 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
                                 text="My name is ")
         self.assertHTMLContains("span", attributes={"itemprop": "name"},
                                 text="John Doe")
+
+    def test_itemscope_tag_span(self):
+        # the result should be
+        # <span itemprop="ingredient" itemscope itemtype="http://data-vocabulary.org/RecipeIngredient">
+        #  Thinly-sliced <span itemprop="name">apples</span>:<span itemprop="amount">6 cups</span>
+        # </span>
+        expected = (
+            '<span itemprop="ingredient" itemscope itemtype="http://data-vocabulary.org/RecipeIngredient">'
+            'Thinly-sliced <span itemprop="name">apples</span>:'
+            '<span itemprop="amount">6 cups</span>'
+            '</span>'
+        )
+        self.sample = """.. itemscope:: RecipeIngredient
+            :tag: span
+            :itemprop: ingredient
+
+            Thinly-sliced :itemprop:`apples <name>`::itemprop:`6 cups <amount>`
+        """
+        self.basic_test()
+        self.assertHTMLEqual(expected.strip())
 
 
 class ItemScopeNestedTestCase(ReSTExtensionTestCase):
