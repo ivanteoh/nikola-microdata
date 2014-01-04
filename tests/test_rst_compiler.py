@@ -42,19 +42,14 @@ except ImportError:
     from StringIO import StringIO  # NOQA
 import tempfile
 
-import docutils
 from lxml import html
-from nose.plugins.skip import SkipTest
 import unittest
 from yapsy.PluginManager import PluginManager
 
 from nikola import utils
 import nikola.plugins.compile.rest
-from nikola.plugins.compile.rest import gist
-from nikola.plugins.compile.rest import vimeo
 import nikola.plugins.compile.rest.listing
-from nikola.plugins.compile.rest.doc import Plugin as DocPlugin
-from nikola.utils import _reload, STDERR_HANDLER
+from nikola.utils import STDERR_HANDLER
 from nikola.plugin_categories import (
     Command,
     Task,

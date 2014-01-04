@@ -9,9 +9,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import unittest
 
-from os.path import dirname, join
-
-#from pelican import readers
 from nikola.utils import LOGGER
 import logbook
 from test_rst_compiler import ReSTExtensionTestCase
@@ -54,7 +51,7 @@ class ItemPropUrlTestCase(ReSTExtensionTestCase):
         LOGGER.notice('--- END OF TESTS FOR ItemPropUrl')
 
     def test_itemprop_url(self):
-        # the result should be 
+        # the result should be
         # <p><a href="http://somewhere/" itemprop="url">Test</a></p>
         self.sample = ':itemprop:`Test <url:http://somewhere/>`'
         self.basic_test()
@@ -77,7 +74,7 @@ class ItemScopeTestCase(ReSTExtensionTestCase):
         LOGGER.notice('--- END OF TESTS FOR ItemScope')
 
     def test_itemscope(self):
-        # the result should be 
+        # the result should be
         # <div itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is John Doe
         # </div>
@@ -101,10 +98,10 @@ class ItemScopePropTestCase(ReSTExtensionTestCase):
     def tearDownClass():
         sys.stdout.write('\n')
         LOGGER.level = logbook.NOTICE
-        LOGGER.notice('--- END OF TESTS FOR ItemScopeProp') 
+        LOGGER.notice('--- END OF TESTS FOR ItemScopeProp')
 
     def test_itemscope_itemprop(self):
-        # the result should be 
+        # the result should be
         # <div itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is <span itemprop="name">John Doe</span>
         # </div>
@@ -133,11 +130,11 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
         LOGGER.notice('--- END OF TESTS FOR ItemScopeTag')
 
     def test_itemscope_tag(self):
-        # the result should be 
+        # the result should be
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is <span itemprop="name">John Doe</span>
         # </p>
-        self.sample = """.. itemscope:: Person  
+        self.sample = """.. itemscope:: Person
             :tag: p
 
             My name is :itemprop:`John Doe <name>`
@@ -163,7 +160,7 @@ class ItemScopeNestedTestCase(ReSTExtensionTestCase):
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNested')
 
     def test_nested_scope(self):
-        # the result should be 
+        # the result should be
         # <div itemscope itemtype="http://data-vocabulary.org/Person">
         # <p>My name is <span itemprop="name">John Doe</span></p>
         # <p itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
@@ -190,7 +187,7 @@ class ItemScopeNestedTestCase(ReSTExtensionTestCase):
                 My name is :itemprop:`John Doe <name>`
         """
         self.basic_test()
-        self.assertHTMLContains("div", attributes={"itemscope": "", 
+        self.assertHTMLContains("div", attributes={"itemscope": "",
                                 "itemtype": "http://data-vocabulary.org/Person"},
                                 text="")
         self.assertHTMLEqual(expected.strip())
@@ -210,7 +207,7 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNestedCompact')
 
     def test_nested_scope_compact(self):
-        # the result should be 
+        # the result should be
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
         # My name is <span itemprop="name">John Doe</span>
         # <span itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
@@ -237,7 +234,7 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
                 My name is :itemprop:`John Doe <name>`
         """
         self.basic_test()
-        self.assertHTMLContains("p", attributes={"itemscope": "", 
+        self.assertHTMLContains("p", attributes={"itemscope": "",
                                 "itemtype": "http://data-vocabulary.org/Person"},
                                 text="My name is ")
         self.assertHTMLEqual(expected.strip())

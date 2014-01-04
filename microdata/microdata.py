@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# The original author is Axel Haustant (noirbizarre). 
+# The original author is Axel Haustant (noirbizarre).
 # This code is fork from https://github.com/noirbizarre/pelican-microdata
 """
 Microdata markup for reStructuredText
@@ -54,12 +54,9 @@ will result in:
 from __future__ import unicode_literals
 
 import re
-import six
 
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive, roles
-#from pelican.readers import PelicanHTMLTranslator
-from types import MethodType
 from nikola.plugin_categories import RestExtension
 from nikola.plugins.compile.rest import add_node
 
@@ -161,7 +158,7 @@ def visit_ItemScope(self, node):
     self.context.append(self.compact_simple)
     self.compact_simple = node.compact
     self.body.append(node.starttag())
-    
+
 
 def depart_ItemScope(self, node):
     self.compact_simple = self.context.pop()

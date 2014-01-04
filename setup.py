@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 PYPI_RST_FILTERS = (
     # Replace code-blocks
-    (r'\.\.\s? code-block::\s*(\w|\+)+',  '::'),
+    (r'\.\.\s? code-block::\s*(\w|\+)+', '::'),
     # Remove travis ci badge
     (r'.*travis-ci\.org/.*', ''),
     # Remove pypip.in badges
