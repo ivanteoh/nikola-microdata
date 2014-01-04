@@ -183,6 +183,52 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
         self.basic_test()
         self.assertHTMLEqual(expected.strip())
 
+    def test_itemscope_h1(self):
+        # the result should be
+        # <div itemscope itemtype="http://data-vocabulary.org/Recipe">
+        # <h1 itemprop="name">Grandma\'s Holiday Apple Pie</h1>
+        # </div>
+        self.sample = """.. itemscope:: Recipe
+        
+            :itemprop:`Grandma's Holiday Apple Pie <name||h1>`
+        """
+        self.basic_test()
+        self.assertHTMLContains("div", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Recipe"},
+                                text="")
+        self.assertHTMLContains("h1", attributes={"itemprop": "name"},
+                                text="Grandma's Holiday Apple Pie")
+
+    def test_itemscope_div(self):
+        # the result should be
+        # <div itemscope itemtype="http://data-vocabulary.org/Recipe">
+        # <div itemprop="instructions">
+        # <p itemprop="instruction">Cut and peel apples.</p>
+        # <p itemprop="instruction">Mix sugar and cinnamon. Use additional sugar for tart apples.</p>
+        # </div></div>
+        expected = (
+            '<div itemscope itemtype="http://data-vocabulary.org/Recipe">'
+            '<div itemprop="instructions">'
+            '<p itemprop="instruction">Cut and peel apples.</p>'
+            '<p itemprop="instruction">Mix sugar and cinnamon. Use additional sugar for tart apples.</p>'
+            '</div></div>'
+        )
+        self.sample = """.. itemscope:: Recipe
+        
+            .. itempropblock:: instructions
+
+                .. itempropblock:: instruction
+                    :tag: p
+
+                    Cut and peel apples. 
+
+                .. itempropblock:: instruction
+                    :tag: p
+
+                    Mix sugar and cinnamon. Use additional sugar for tart apples.
+        """
+        self.basic_test()
+        self.assertHTMLEqual(expected.strip())
+
 
 class ItemScopeNestedTestCase(ReSTExtensionTestCase):
 

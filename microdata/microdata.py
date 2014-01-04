@@ -70,11 +70,13 @@ class Plugin(RestExtension):
     def set_site(self, site):
         self.site = site
         directives.register_directive('itemscope', ItemScopeDirective)
+        directives.register_directive('itempropblock', ItemPropDirective)
         roles.register_canonical_role('itemprop', itemprop_role)
 
         add_node(ItemProp, visit_ItemProp, depart_ItemProp)
+        add_node(ItemPropBlock, visit_ItemPropBlock, depart_ItemPropBlock)
         add_node(ItemScope, visit_ItemScope, depart_ItemScope)
-
+        
         return super(Plugin, self).set_site(site)
 
 
@@ -103,6 +105,33 @@ def itemprop_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
         if len(names) > 2:
             tag = names[2]
     return [ItemProp(value, value, name=name, info=info, tag=tag)], []
+
+
+class ItemPropBlock(nodes.Element):
+    def __init__(self, tagname, itemprop):
+        kwargs = {
+            'itemprop': itemprop,
+        }
+        super(ItemPropBlock, self).__init__('', **kwargs)
+        self.tagname = tagname
+
+
+class ItemPropDirective(Directive):
+    required_arguments = 1
+    has_content = True
+    option_spec = {
+        'tag': directives.unchanged,
+    }
+
+    def run(self):
+        # Raise an error if the directive does not have contents.
+        self.assert_has_content()
+        itemprop = self.arguments[0]
+        tag = self.options.get('tag', 'div')
+        node = ItemPropBlock(tag, itemprop)
+        self.add_name(node)
+        self.state.nested_parse(self.content, self.content_offset, node)
+        return [node]
 
 
 class ItemScope(nodes.Element):
@@ -148,11 +177,12 @@ def visit_ItemProp(self, node):
         node['tag'] = 'a'
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], href=node['info']))
     elif node['name'] == 'photo' and node['tag'] == 'img':
-        self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], src=node['info']))
+        self.body.append(self.emptytag(node, node['tag'], '', itemprop=node['name'], src=node['info']))
     elif (node['name'] == 'prepTime' or 
         node['name'] == 'cookTime' or 
         node['name'] == 'totalTime' or
         node['name'] == 'published') and node['tag'] == 'time':
+        # TODO: auto convert the time
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name'], datetime=node['info']))
     else:
         self.body.append(self.starttag(node, node['tag'], '', itemprop=node['name']))
@@ -161,8 +191,16 @@ def visit_ItemProp(self, node):
 def depart_ItemProp(self, node):
     end_tag = '</' + node['tag'] + '>'
     if node['tag'] == 'img':
-        end_tag = '</>'
+        return
     self.body.append(end_tag)
+
+
+def visit_ItemPropBlock(self, node):
+    self.body.append(node.starttag())
+
+
+def depart_ItemPropBlock(self, node):
+    self.body.append(node.endtag())
 
 
 def visit_ItemScope(self, node):
