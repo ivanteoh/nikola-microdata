@@ -78,17 +78,6 @@ class Plugin(RestExtension):
         add_node(ItemProp, visit_ItemProp, depart_ItemProp)
         add_node(ItemScope, visit_ItemScope, depart_ItemScope)
 
-        #nodes._add_node_class_names([ItemScope.__name__])
-
-        #NikolaHTMLTranslator.visit_ItemProp = as_method(visit_ItemProp)
-        #NikolaHTMLTranslator.depart_ItemProp = as_method(depart_ItemProp)
-        #NikolaHTMLTranslator.visit_ItemScope = as_method(visit_ItemScope)
-        #NikolaHTMLTranslator.depart_ItemScope = as_method(depart_ItemScope)
-
-        # handle compact parameter
-        # TODO: find a cleaner way to handle this case
-        #NikolaHTMLTranslator.visit_paragraph = as_method(visit_paragraph)
-
         return super(Plugin, self).set_site(site)
 
 
@@ -169,22 +158,11 @@ def depart_ItemProp(self, node):
 
 
 def visit_ItemScope(self, node):
+    self.context.append(self.compact_simple)
+    self.compact_simple = node.compact
     self.body.append(node.starttag())
-
+    
 
 def depart_ItemScope(self, node):
+    self.compact_simple = self.context.pop()
     self.body.append(node.endtag())
-
-
-def visit_paragraph(self, node):
-    if self.should_be_compact_paragraph(node) or (isinstance(node.parent, ItemScope) and node.parent.compact):
-        self.context.append('')
-    else:
-        self.body.append(self.starttag(node, 'p', ''))
-        self.context.append('</p>\n')
-
-#def as_method(func):
-#    if six.PY3:
-#        return MethodType(func, NikolaHTMLTranslator)
-#    else:
-#        return MethodType(func, None, NikolaHTMLTranslator)

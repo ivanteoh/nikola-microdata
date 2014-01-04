@@ -143,6 +143,7 @@ class ItemScopeTagTestCase(ReSTExtensionTestCase):
             My name is :itemprop:`John Doe <name>`
         """
         self.basic_test()
+        import pdb; pdb.set_trace()
         self.assertHTMLContains("p", attributes={"itemscope": "", "itemtype": "http://data-vocabulary.org/Person"},
                                 text="My name is ")
         self.assertHTMLContains("span", attributes={"itemprop": "name"},
@@ -209,7 +210,6 @@ class ItemScopeNestedCompactTestCase(ReSTExtensionTestCase):
         LOGGER.level = logbook.NOTICE
         LOGGER.notice('--- END OF TESTS FOR ItemScopeNestedCompact')
 
-    @unittest.skip("testing skipping")
     def test_nested_scope_compact(self):
         # the result should be 
         # <p itemscope itemtype="http://data-vocabulary.org/Person">
