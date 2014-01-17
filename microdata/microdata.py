@@ -1,56 +1,22 @@
 # -*- coding: utf-8 -*-
-# The original author is Axel Haustant (noirbizarre).
-# This code is fork from https://github.com/noirbizarre/pelican-microdata
-"""
-Microdata markup for reStructuredText
-=====================================
 
-Directives
-----------
+# Copyright © 2013-2014 Axel Haustant, Ivan Teoh and others.
 
-.. code-block:: ReST
+# pelican-microdata is LGPL-licensed.
 
-    .. itemscope:: <Schema type>
-        :tag: element type (default: div)
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-        Nested content
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    :itemprop:`Displayed test <itemprop name>`
-
-
-Examples
---------
-
-This reStructuredText document:
-
-.. code-block:: ReST
-
-    .. itemscope: Person
-        :tag: p
-
-        My name is :itemprop:`Bob Smith <name>`
-        but people call me :itemprop:`Smithy <nickanme>`.
-        Here is my home page:
-        :itemprop:`www.exemple.com <url:http://www.example.com>`
-        I live in Albuquerque, NM and work as an :itemprop:`engineer <title>`
-        at :itemprop:`ACME Corp <affiliation>`.
-
-
-will result in:
-
-.. code-block:: html
-
-    <p itemscope itemtype="http://data-vocabulary.org/Person">
-        My name is <span itemprop="name">Bob Smith</span>
-        but people call me <span itemprop="nickname">Smithy</span>.
-        Here is my home page:
-        <a href="http://www.example.com" itemprop="url">www.example.com</a>
-        I live in Albuquerque, NM and work as an <span itemprop="title">engineer</span>
-        at <span itemprop="affiliation">ACME Corp</span>.
-    </p>
-
-"""
 from __future__ import unicode_literals
 
 import re
