@@ -4,7 +4,13 @@ Microdata plugin for Nikola
 `Microdata`_ semantic markups support for `Nikola`_ static blog generator. 
 The original code is at `pelican-microdata`_. It is created to support `recipe 
 microdata`_ (`recipe schema`_)in mind. It should support other microdata type. More info, 
-please refer to 
+please refer to
+
+.. image:: https://travis-ci.org/ivanteoh/nikola-microdata.png
+   :target: https://travis-ci.org/ivanteoh/nikola-microdata
+
+.. image:: https://coveralls.io/repos/ivanteoh/nikola-microdata/badge.png?branch=master
+  :target: https://coveralls.io/r/ivanteoh/nikola-microdata?branch=master 
 
 Directives
 ~~~~~~~~~~
