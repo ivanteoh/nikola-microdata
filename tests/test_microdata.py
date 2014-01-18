@@ -5,13 +5,14 @@ from __future__ import unicode_literals, absolute_import
 # and should be before any import touching nikola, in any file under tests/
 import os
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+#sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join('plugins', 'microdata'))
 
 import unittest
 
 from nikola.utils import LOGGER
 import logbook
-from test_rst_compiler import ReSTExtensionTestCase
+from .test_rst_compiler import ReSTExtensionTestCase
 
 
 class ItemPropTestCase(ReSTExtensionTestCase):
